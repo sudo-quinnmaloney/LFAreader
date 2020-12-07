@@ -1,9 +1,8 @@
-from os import listdir, mkdir
-from os.path import isfile, isdir, splitext, join
+from os import listdir, mkdir, getcwd
+from os.path import isfile, isdir, splitext, join, dirname
 from scipy.signal import find_peaks, peak_widths
 import cv2
 import numpy as np
-import imutils
 import csv
 
 ''' Used for visualization '''
@@ -21,7 +20,7 @@ x_range = 200   #Sets the width of each detected box
 #About half the width of the strip, if nothing's found check this first
 defaultCenterSpace = 200
                             
- #Reaction strips should fall within this range of y-values
+#Reaction strips should fall within this range of y-values
 crop_y1, crop_y2 = 1900, 3000
 
 #Determines the y-values around which the reference boxes should be centered
@@ -61,14 +60,12 @@ def getData(imagePath, drawLines, graphPeaks):
                 break
         lastBounds = [np.mean(bounds[:mid]), np.mean(bounds[mid:])]
         center = np.mean(lastBounds)
-        centerSpace = int(center - lastBounds[0])
     
     if center == 0 :
         print('Check here')
         bound = int(np.mean(bounds))
         center = bound - defaultCenterSpace if (np.mean(x[int(y_x/2)][bound - defaultCenterSpace]) > np.mean(x[int(y_x / 2)][bound + defaultCenterSpace])) else bound + defaultCenterSpace
-    center = defaultCenter if center == 0 else center
-    
+
     crop_left, crop_right = int(center - x_range / 2), int(center + x_range / 2)
 
     
@@ -180,34 +177,34 @@ def getData(imagePath, drawLines, graphPeaks):
     
 
 def processImages(folderName, drawLines, saveBounds, showBounds, graphPeaks):
-    for folder in listdir(folderName):
-        if isdir(join(folderName,folder)):
-            print('Found folder: ' + folder)
-            path = folderName + '/' + str(folder) + '/'
-            try:
-                imageList = [f for f in listdir(path) if isfile(join(path, f)) and splitext(f)[1] == '.jpg']
-            except:
-                continue
+    if (folderName == 'quit'):
+        return
+    found = False
+    for folder in listdir(getcwd()):
+        if folder == folderName:
+            found = True
+            path = getcwd() + '/' + str(folder) + '/'
+            imageList = [f for f in listdir(path) if isfile(join(path, f)) and splitext(f)[1] == '.jpg']
+            if len(imageList)==0:
+                print('No jpg\'s in that folder.')
+                break
             imageList = sorted(imageList)
             print(str(len(imageList)) + ' images imported...')
-            
+
             #Process images, and write each folder's data to a spreadsheet
             with open(folderName + '/' + folder + '.csv','w', newline='') as sheet:
-            
                 #Builds a directory for the processed images
                 try:
                     mkdir(path + 'Processed_' + folder)
                 except OSError:
                     print('Loading...')
                 savePath = path + 'Processed_' + folder + '/'
-                
                 writer = csv.writer(sheet, delimiter = ',')
                 writer.writerow(['Image', 'Control strip', 'Test strip', 'Ref 1', 'Ref 2'])
                 for image in imageList:
                     boxSums, processedImage = getData(path + image, drawLines, graphPeaks)
-                    
                     writer.writerow([str(image)] + boxSums)
-                    if saveBoxes:
+                    if saveBounds:
                         if not cv2.imwrite(savePath + 'processed_' + image, processedImage):
                             print('Failed to save image...')
                     if showBounds:
@@ -215,10 +212,13 @@ def processImages(folderName, drawLines, saveBounds, showBounds, graphPeaks):
                         cv2.waitKey(0)
                         cv2.destroyAllWindows()
                 print('Done.' + '\n')
+    if not found:
+        print('Folder not found!')
+    main()
 
 def main():
     #processImages(folderName, drawLines, drawBounds, graphPeaks)
-    processImages('LP1-4-33-selected', edges, saveBoxes, showBoxes, graphs)
+    processImages(input('Enter the folder name, or \'quit\' to escape: '), edges, saveBoxes, showBoxes, graphs)
 
 if __name__ == '__main__':
     main()
