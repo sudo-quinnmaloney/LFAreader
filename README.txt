@@ -1,20 +1,22 @@
-First, download the Anaconda Graphical Installer for Python 3.7
-Accept default settings, and select 'Install only for me' when given the option.
- and follow installation instructions:
-	https://www.anaconda.com/products/individual
+First, install the latest version of python from the link below. During installation, check the box that will add Python to your 'Path'.
+	https://www.python.org/downloads/
 
+Next, download the intsaller for the open-source, community version of PyCharm from the link below.
+	https://www.jetbrains.com/pycharm/download/#section=windows
 
+During installation, check boxes for "64-bit launcher" (to create a Desktop shortcut), and ".py" (you'll be running a python script). After clicking 'Next', continue with the default path. Launch PyCharm once it's installed, but don't create a new project yet.
 
+Instead, select 'Get from Version Control' (or 'Get from VCS' depending on your machine). Under URL, copy and paste the following address to access the github repository: 		https://github.com/sudo-quinnmaloney/LFAreader
 
-Next, follow these instructions to download the OpenCV Python library:
-	https://medium.com/@pranav.keyboard/installing-opencv-for-python-on-windows-using-anaconda-or-winpython-f24dd5c895eb
+Below the URL, you can change the title of the project by changing the last portion of the location:
+	'...\PycharmProjects\title_here' --> '...\PycharmProjects\LFAreader'
 
+Below both of these boxes, if git is not installed there will be an option to install git. Select this.
+Once git is installed, proceed with 'Clone' in the bottom left.
 
-If you chose “All users” while installing then you have to launch the prompt by Right-clicking and choosing “Run as Administrator” to execute with administrator privileges. This is critical.
+Select 'Terminal' in the bottom left of the IDE.
+In the terminal, enter the command 'pip install opencv-python' to install OpenCV (the cv2 library).
 
-Run the following commands in the given order. These create a virtual environment for the program to run on, and installs a necessary library.
+Once this is done, you'll want to install the remaining packages on lines 1 through 6. You can do this easily by right clicking on the library names (each will be underlined in red as an 'unresolved reference') and opting to 'import package'.
 
->conda create — name LFAreader
->activate LFAreader
->conda install -c conda-forge opencv
-
+Now simply drag and drop image directories into the project folder, and click the green play button in the top right to run the program. Turn your attention to the 'Run' terminal in the bottom half of the screen. When the program prompts you for the name of the image directory, type the name and press enter.
