@@ -97,7 +97,7 @@ def getData(imagePath, drawLines, graphPeaks):
     
     #rotate about center of image.
     M = cv2.getRotationMatrix2D(center=(mid_x[0], y_x/2), angle = r, scale=1)
-    rotatedImg = cv2.warpAffine(x, M, dsize=(x_x, y_x))
+    rotatedImg = cv2.warpAffine(x, M, dsize=(y_x, x_x))
     croppedImg = rotatedImg[crop_y1:crop_y2, crop_left:crop_right,:]
         
     #produce a 'heat map' for pixel intesity with each point being the sum of a row
