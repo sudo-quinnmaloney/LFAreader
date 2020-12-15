@@ -1,3 +1,4 @@
+print('Initializing...')
 from os import listdir, mkdir, getcwd
 from os.path import isfile, isdir, splitext, join, dirname
 from scipy.signal import find_peaks, peak_widths
