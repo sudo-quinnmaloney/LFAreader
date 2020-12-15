@@ -19,4 +19,4 @@ In the terminal, enter the command 'pip install opencv-python' to install OpenCV
 
 Once this is done, you'll want to install the remaining packages on lines 1 through 6. You can do this easily by right clicking on the library names (each will be underlined in red as an 'unresolved reference') and opting to 'import package'.
 
-Now simply drag and drop image directories into the project folder, and click the green play button in the top right to run the program. Turn your attention to the 'Run' terminal in the bottom half of the screen. When the program prompts you for the name of the image directory, type the name and press enter.
+Now simply drag and drop image directories into the project folder, and click the green play button in the top right to run the program. Turn your attention to the 'Run' terminal in the bottom half of the screen. When the program prompts you for the name of an image directory, type the name of the folder you want to process and press enter. Within the given folder, the program will create a folder of processed images, and a '.csv' file containing the data table.
