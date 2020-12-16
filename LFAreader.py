@@ -1,4 +1,4 @@
-print('Initializing...')
+print('Initializing...\n')
 from os import listdir, mkdir, getcwd
 from os.path import isfile, isdir, splitext, join, dirname
 from scipy.signal import find_peaks, peak_widths
@@ -41,13 +41,14 @@ def getData(imagePath, drawLines, graphPeaks):
     gray = cv2.GaussianBlur(gray, (5,5),0)
     edges = cv2.Canny(gray, 50, 200, apertureSize = 5)
     
-    # last parameter sets minimum number of points to classifly line; looks for prominent lines, then try more dubious ones
-
+    
+    # last parameter sets minimum number of points to classifly line; the more the better as long as there aren't any crazy outliers... could be more robust
     lines = cv2.HoughLines(edges,1,np.pi/180,minLine)
     
     mid_x = []
     for line in lines:
         for rho, theta in line:
+            #store the projected x-value at the center for each line
             mid_x.append(rho * np.cos(theta) - (y_x/2 - rho * np.sin(theta)) * np.tan(theta))
     
     # separate left bounds from right bounds
@@ -176,52 +177,68 @@ def getData(imagePath, drawLines, graphPeaks):
     
     return values, rotatedImg
     
-
-def processImages(folderName, drawLines, saveBounds, showBounds, graphPeaks):
+def processImages(path, folder, imageList, drawLines, saveBounds, showBounds, graphPeaks):
+    #Process images, and write each folder's data to a spreadsheet
+    with open(path + folder + '.csv','w', newline='') as sheet:
+        #Builds a directory for the processed images
+        try:
+            mkdir(path + 'Processed_' + folder)
+        except OSError:
+            print('\tLoading...')
+        savePath = path + 'Processed_' + folder + '/'
+        writer = csv.writer(sheet, delimiter = ',')
+        writer.writerow(['Image', 'Control strip', 'Test strip', 'Ref 1', 'Ref 2'])
+        for image in imageList:
+            boxSums, processedImage = getData(path + image, drawLines, graphPeaks)
+            writer.writerow([str(image)] + boxSums)
+            if saveBounds:
+                if not cv2.imwrite(savePath + 'processed_' + image, processedImage):
+                    print('Failed to save image...')
+            if showBounds:
+                cv2.imshow('processed_' + image, processedImage)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+        print('\tDone.' + '\n')
+        
+def processFolders(folderName, drawLines, saveBounds, showBounds, graphPeaks):
+    found = False
     if (folderName == 'quit'):
         return
-    found = False
+    if (folderName == 'help'):
+        print('\tAlternatively, enter \'all\' to search all available directories. \n\tTo exit, enter \'quit\'.\n\tFor more documentation: https://github.com/sudo-quinnmaloney/LFAreader\n')
+        found = True
+    if (folderName == 'all'):
+        for folder in listdir(getcwd()):
+            if not isdir(folder):
+                continue
+            path = getcwd() + '/' + str(folder) + '/'
+            imageList = [f for f in listdir(path) if isfile(join(path, f)) and splitext(f)[1] == '.jpg']
+            if len(imageList)==0:
+                break
+            print('\tFound folder: ' + folder)
+            imageList = sorted(imageList)
+            print('\t' + str(len(imageList)) + ' images imported...')
+            processImages(path, folder, imageList, drawLines, saveBounds, showBounds, graphPeaks)
+            found = True
+                
     for folder in listdir(getcwd()):
-        if folder == folderName:
+        if folder == folderName and isdir(folder):
             found = True
             path = getcwd() + '/' + str(folder) + '/'
             imageList = [f for f in listdir(path) if isfile(join(path, f)) and splitext(f)[1] == '.jpg']
             if len(imageList)==0:
-                print('No jpg\'s in that folder.')
+                print('\tNo jpg\'s in that folder.\n')
                 break
             imageList = sorted(imageList)
-            print(str(len(imageList)) + ' images imported...')
-
-            #Process images, and write each folder's data to a spreadsheet
-            with open(folderName + '/' + folder + '.csv','w', newline='') as sheet:
-                #Builds a directory for the processed images
-                try:
-                    mkdir(path + 'Processed_' + folder)
-                except OSError:
-                    print('Loading...')
-                savePath = path + 'Processed_' + folder + '/'
-                writer = csv.writer(sheet, delimiter = ',')
-                writer.writerow(['Image', 'Control strip', 'Test strip', 'Ref 1', 'Ref 2'])
-                for image in imageList:
-                    boxSums, processedImage = getData(path + image, drawLines, graphPeaks)
-                    writer.writerow([str(image)] + boxSums)
-                    if saveBounds:
-                        if not cv2.imwrite(savePath + 'processed_' + image, processedImage):
-                            print('Failed to save image...')
-                    if showBounds:
-                        cv2.imshow('processed_' + image, processedImage)
-                        cv2.waitKey(0)
-                        cv2.destroyAllWindows()
-                print('Done.' + '\n')
+            print('\t' + str(len(imageList)) + ' images imported...')
+            processImages(path, folder, imageList, drawLines, saveBounds, showBounds, graphPeaks)
     if not found:
-        print('Folder not found!')
+        print('\tFolder not found!\n')
     main()
 
 def main():
     #processImages(folderName, drawLines, drawBounds, graphPeaks)
-    processImages(input('Enter the folder name, or \'quit\' to escape: '), edges, saveBoxes, showBoxes, graphs)
+    processFolders(input('Enter the folder name, or \'help\': '), edges, saveBoxes, showBoxes, graphs)
 
 if __name__ == '__main__':
     main()
-
-
