@@ -64,7 +64,7 @@ def getData(imagePath, drawLines, graphPeaks):
         center = np.mean(lastBounds)
     
     if center == 0 :
-        print('Check here, only one edge detected.')
+        print('/tCheck '+ imagePath + ', only one edge detected.')
         bound = int(np.mean(bounds))
         center = bound - defaultCenterSpace if (np.mean(x[int(y_x/2)][bound - defaultCenterSpace]) > np.mean(x[int(y_x / 2)][bound + defaultCenterSpace])) else bound + defaultCenterSpace
 
