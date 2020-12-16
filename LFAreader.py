@@ -183,8 +183,9 @@ def processImages(path, folder, imageList, drawLines, saveBounds, showBounds, gr
         #Builds a directory for the processed images
         try:
             mkdir(path + 'Processed_' + folder)
-        except OSError:
             print('\tLoading...')
+        except OSError:
+            print('\tOverwriting...')
         savePath = path + 'Processed_' + folder + '/'
         writer = csv.writer(sheet, delimiter = ',')
         writer.writerow(['Image', 'Control strip', 'Test strip', 'Ref 1', 'Ref 2'])
@@ -214,7 +215,7 @@ def processFolders(folderName, drawLines, saveBounds, showBounds, graphPeaks):
             path = getcwd() + '/' + str(folder) + '/'
             imageList = [f for f in listdir(path) if isfile(join(path, f)) and splitext(f)[1] == '.jpg']
             if len(imageList)==0:
-                break
+                continue
             print('\tFound folder: ' + folder)
             imageList = sorted(imageList)
             print('\t' + str(len(imageList)) + ' images imported...')
