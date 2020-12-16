@@ -27,7 +27,7 @@ crop_y1, crop_y2 = 1900, 3000
 #Determines the y-values around which the reference boxes should be centered
 referenceDistance1, referenceDistance2 = 1500, 3000
 
-#Sets the minimum number of detected points to be accepted as a line
+#Sets the minimum number of detected points to be accepted as a line (250 is good)
 #If you aren't finding any edges, try lowering this
 #(although it's more likely an image problem at that point)
 minLine = 250
@@ -43,13 +43,17 @@ def getData(imagePath, drawLines, graphPeaks):
     
     
     # last parameter sets minimum number of points to classifly line; the more the better as long as there aren't any crazy outliers... could be more robust
-    lines = cv2.HoughLines(edges,1,np.pi/180,minLine)
     
+    lines = cv2.HoughLines(edges,1,np.pi/180,minLine)
     mid_x = []
-    for line in lines:
-        for rho, theta in line:
-            #store the projected x-value at the center for each line
-            mid_x.append(rho * np.cos(theta) - (y_x/2 - rho * np.sin(theta)) * np.tan(theta))
+    try:
+        for line in lines:
+            for rho, theta in line:
+                #store the projected x-value at the center for each line
+                mid_x.append(rho * np.cos(theta) - (y_x/2 - rho * np.sin(theta)) * np.tan(theta))
+    except:
+        print('\tUnable to find edges, adjust minLine?')
+        return [0,0],x
     
     # separate left bounds from right bounds
     bounds = sorted(mid_x)
@@ -64,7 +68,6 @@ def getData(imagePath, drawLines, graphPeaks):
         center = np.mean(lastBounds)
     
     if center == 0 :
-        print('/tCheck '+ imagePath + ', only one edge detected.')
         bound = int(np.mean(bounds))
         center = bound - defaultCenterSpace if (np.mean(x[int(y_x/2)][bound - defaultCenterSpace]) > np.mean(x[int(y_x / 2)][bound + defaultCenterSpace])) else bound + defaultCenterSpace
 
