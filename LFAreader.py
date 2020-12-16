@@ -32,6 +32,7 @@ referenceDistance1, referenceDistance2 = 1500, 3000
 #(although it's more likely an image problem at that point)
 minLine = 250
 
+''' Process an image '''
 def getData(imagePath, drawLines, graphPeaks):
     x = cv2.imread(imagePath)
     x_x, y_x = x.shape[0:2]
@@ -179,7 +180,8 @@ def getData(imagePath, drawLines, graphPeaks):
                        3, (255,100,200), 2, cv2.LINE_AA)
     
     return values, rotatedImg
-    
+
+'''Store results of an image'''
 def processImages(path, folder, imageList, drawLines, saveBounds, showBounds, graphPeaks):
     #Process images, and write each folder's data to a spreadsheet
     with open(path + folder + '.csv','w', newline='') as sheet:
@@ -203,7 +205,8 @@ def processImages(path, folder, imageList, drawLines, saveBounds, showBounds, gr
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
         print('\tDone.' + '\n')
-        
+    
+'''Cycle through images'''
 def processFolders(folderName, drawLines, saveBounds, showBounds, graphPeaks):
     found = False
     if (folderName == 'quit'):
