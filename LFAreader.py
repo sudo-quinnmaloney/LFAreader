@@ -127,6 +127,8 @@ def getData(imagePath, drawLines, graphPeaks):
         pyplot.plot(left_ips, lateralSum[[int(l) for l in left_ips]], ".", c="r")
         pyplot.plot(right_ips, lateralSum[[int(r) for r in right_ips]], ".", c= "r")
         pyplot.title(imagePath)
+        pyplot.xlabel('Position along strip (pixels)')
+        pyplot.ylabel('Pixel intesity (arbitrary units)')
         pyplot.show()
     
         
@@ -163,7 +165,7 @@ def getData(imagePath, drawLines, graphPeaks):
         #use the FWHM bounds to find the box center
         peak = int((left_ips[i] + right_ips[i]) / 2)
         rotatedImg = cv2.rectangle(rotatedImg, (crop_left, peak + int(y_range/2)), (crop_right, peak - int(y_range/2)), (255, 100, 200), 10)
-    
+        
     #visualize reference points as well
     rotatedImg = cv2.rectangle(rotatedImg, (crop_left, referenceDistance1 + int(y_range/2)), (crop_right, referenceDistance1 - int(y_range/2)), (255, 100, 200), 10)
     rotatedImg = cv2.rectangle(rotatedImg, (crop_left, referenceDistance2 + int(y_range/2)), (crop_right, referenceDistance2 - int(y_range/2)), (255, 100, 200), 10)
