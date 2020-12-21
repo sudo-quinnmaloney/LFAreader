@@ -6,7 +6,8 @@ Next, download the intsaller for the open-source, community version of PyCharm f
 
 During installation, check boxes for "64-bit launcher" (to create a Desktop shortcut), and ".py" (you'll be running a python script). After clicking 'Next', continue with the default path. Launch PyCharm once it's installed, but don't create a new project yet.
 
-Instead, select 'Get from Version Control' (or 'Get from VCS' depending on your machine). Under URL, copy and paste the following address to access the github repository: 		https://github.com/sudo-quinnmaloney/LFAreader
+Instead, select 'Get from Version Control' (or 'Get from VCS' depending on your machine). Under URL, copy and paste the following address to access the github repository: 		
+	https://github.com/sudo-quinnmaloney/LFAreader
 
 Below the URL, you can change the title of the project by changing the last portion of the location:
 	'...\PycharmProjects\title_here' --> '...\PycharmProjects\LFAreader'
