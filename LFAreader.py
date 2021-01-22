@@ -115,6 +115,9 @@ def getData(imagePath, drawLines, graphPeaks):
         if len(peaks) != 0:
             break
         prom = prom - .2
+        if prom == 0:
+            print('skipped...')
+            return [0,0,0,0], rotatedImg
         
     #adjust the detected peak to hit the middle of the strip
     widths, width_heights, left_ips, right_ips = peak_widths(lateralSum, peaks, rel_height = 0.5,prominence_data=None, wlen=None)
