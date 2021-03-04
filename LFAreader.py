@@ -47,16 +47,12 @@ def getData(imagePath, drawLines, graphPeaks):
     gray = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
     if (splitext(imagePath)[-1]=='.dng' or splitext(imagePath)[-1]=='.tiff'):
-        gray = cv2.GaussianBlur(gray, (7,7),0)
-        edges = cv2.Canny(gray, 50, 150, apertureSize = 3)
+        gray = cv2.GaussianBlur(gray, (9,9),0)
+        edges = cv2.Canny(gray, 50, 100, apertureSize = 3)
     else:
         gray = cv2.GaussianBlur(gray, (5,5),0)
-        edges = cv2.Canny(gray, 50, 200, apertureSize = 5)
-    '''
-    cv2.imshow('nothing',edges)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    '''
+        edges = cv2.Canny(gray, 100, 200, apertureSize = 5)
+    
     # last parameter sets minimum number of points to classifly line; the more the better as long as there aren't any crazy outliers... could be more robust
     
     lines = cv2.HoughLines(edges,1,np.pi/180,minLine)
